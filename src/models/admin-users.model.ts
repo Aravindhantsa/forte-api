@@ -1,9 +1,10 @@
-import {Entity, model, property, hasOne} from '@loopback/repository';
-import {AdminUsers} from './admin-users.model';
+import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
+import {ForteUser} from './forte-user.model';
+import {CompanyDetails} from './company-details.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
 
 @model()
-export class ForteUser extends Entity {
+export class AdminUsers extends Entity {
   @property({
     type: 'number',
     id: true,
@@ -29,6 +30,7 @@ export class ForteUser extends Entity {
 
   @property({
     type: 'string',
+    required: true,
   })
   username?: string;
 
@@ -72,19 +74,22 @@ export class ForteUser extends Entity {
   })
   lastUpdated?: string;
 
-  @hasOne(() => AdminUsers)
-  adminUsers: AdminUsers;
+  @belongsTo(() => ForteUser)
+  forteUserId: number;
 
-  @hasOne(() => ExternalCustomersDetail)
-  externalCustomersDetail: ExternalCustomersDetail;
+  @hasMany(() => CompanyDetails, {keyTo: 'salesRepId'})
+  companyDetails: CompanyDetails[];
 
-  constructor(data?: Partial<ForteUser>) {
+  @hasMany(() => ExternalCustomersDetail, {keyTo: 'salesRepId'})
+  externalCustomersDetails: ExternalCustomersDetail[];
+
+  constructor(data?: Partial<AdminUsers>) {
     super(data);
   }
 }
 
-export interface ForteUserRelations {
+export interface AdminUsersRelations {
   // describe navigational properties here
 }
 
-export type ForteUserWithRelations = ForteUser & ForteUserRelations;
+export type AdminUsersWithRelations = AdminUsers & AdminUsersRelations;
