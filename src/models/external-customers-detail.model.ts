@@ -1,4 +1,4 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
 import {AdminUsers} from './admin-users.model';
 import {CompanyDetails} from './company-details.model';
 import {ForteUser} from './forte-user.model';
@@ -79,12 +79,6 @@ export class ExternalCustomersDetail extends Entity {
     required: true,
   })
   email: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  password: string;
 
   @property({
     type: 'string',

@@ -26,7 +26,7 @@ export class JWTService {
   async generateToken(userProfile: UserProfile): Promise<string> {
     const payload = {
       id: userProfile[securityId],
-      email: userProfile.name,
+      email: userProfile.email,
       role: (userProfile as any).role,
     };
 
@@ -40,7 +40,7 @@ export class JWTService {
       const decoded = (await verifyAsync(token, this.jwtSecret)) as any;
       const userProfile: UserProfile = {
         [securityId]: String(decoded.id),
-        name: decoded.name,
+        email: decoded.email,
         id: decoded.id,
         role: decoded.role,
       } as any;

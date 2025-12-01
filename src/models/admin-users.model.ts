@@ -1,7 +1,7 @@
-import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
-import {ForteUser} from './forte-user.model';
+import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
 import {CompanyDetails} from './company-details.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
+import {ForteUser} from './forte-user.model';
 
 @model()
 export class AdminUsers extends Entity {
@@ -44,19 +44,12 @@ export class AdminUsers extends Entity {
     type: 'string',
     required: true,
   })
-  password: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
   userType: string;
 
   @property({
     type: 'string',
-    required: true,
   })
-  status: string;
+  status?: string;
 
   @property({
     type: 'number',

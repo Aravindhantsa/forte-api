@@ -1,4 +1,4 @@
-import {Entity, model, property, hasOne} from '@loopback/repository';
+import {Entity, hasOne, model, property} from '@loopback/repository';
 import {AdminUsers} from './admin-users.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
 
@@ -13,14 +13,9 @@ export class ForteUser extends Entity {
 
   @property({
     type: 'string',
-  })
-  salesRepRefId?: string;
-
-  @property({
-    type: 'string',
     required: true,
   })
-  salesRepName: string;
+  name: string;
 
   @property({
     type: 'string',
@@ -29,8 +24,9 @@ export class ForteUser extends Entity {
 
   @property({
     type: 'string',
+    required: true,
   })
-  username?: string;
+  username: string;
 
   @property({
     type: 'string',
@@ -52,7 +48,6 @@ export class ForteUser extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   })
   status: string;
 
@@ -63,7 +58,6 @@ export class ForteUser extends Entity {
 
   @property({
     type: 'date',
-    required: true,
   })
   created: string;
 

@@ -21,28 +21,47 @@ import {
 } from '@loopback/rest';
 import * as bcrypt from 'bcryptjs';
 import {ForteUser} from '../models';
-import {ForteUserRepository} from '../repositories';
+import {AdminUsersRepository, ForteUserRepository} from '../repositories';
 import {JWTService} from '../services/jwt-service.service';
 
 export class ForteUserController {
   constructor(
     @repository(ForteUserRepository)
     public forteUserRepository: ForteUserRepository,
+    @repository(AdminUsersRepository)
+    public adminUsersRepository: AdminUsersRepository,
     @inject('services.JWTService') public jwtService: JWTService,
   ) { }
 
   @post('/signup')
-  async signup(@requestBody() forteUser: Omit<ForteUser, 'id'>) {
-    if (!forteUser.email || !forteUser.password || !forteUser.userType) {
+  async signup(@requestBody() forteUser: Omit<ForteUser, 'id'> & {salesRepRefId?: string, salesRepName: string}) {
+    if (!forteUser.email || !forteUser.password || !forteUser.userType || !forteUser.username) {
       throw new HttpErrors.BadRequest('Missing fields');
     }
-    const existing = await this.forteUserRepository.findOne({where: {email: forteUser.email}});
-    if (existing) throw new HttpErrors.BadRequest('Email exists');
-    forteUser.password = await bcrypt.hash(forteUser.password!, 10);
-    const created = await this.forteUserRepository.create(forteUser as ForteUser);
-    // remove password before returning
-    (created as any).password = undefined;
-    return created;
+    const emailExisting = await this.forteUserRepository.findOne({where: {email: forteUser.email}});
+    if (emailExisting) throw new HttpErrors.BadRequest('Email exists');
+    const usernameExisting = await this.forteUserRepository.findOne({where: {username: forteUser.username}});
+    if (usernameExisting) throw new HttpErrors.BadRequest('Username exists');
+    const {salesRepRefId, salesRepName, ...forteUserData} = forteUser;
+    forteUserData.password = await bcrypt.hash(forteUser.password!, 10);
+    forteUserData.name = salesRepName;
+    // forteUser.password = await bcrypt.hash(forteUser.password!, 10);
+    // forteUser.name = forteUser.salesRepName;
+    const forteUserCreated = await this.forteUserRepository.create(forteUserData);
+    let adminUserObject = {
+      salesRepRefId: salesRepRefId,
+      salesRepName: salesRepName,
+      mobileNumber: forteUser.mobileNumber,
+      username: forteUser.mobileNumber,
+      email: forteUser.email,
+      userType: forteUser.userType,
+      status: 'active',
+      created: Date(),
+      forteUserId: forteUserCreated.id,
+    }
+    const adminUserCreated = await this.adminUsersRepository.create(adminUserObject);
+    //(forteUserCreated as any).password = undefined;
+    return adminUserCreated;
   }
 
   @post('/login')
