@@ -45,6 +45,7 @@ export class ForteUserController {
     const {salesRepRefId, salesRepName, ...forteUserData} = forteUser;
     forteUserData.password = await bcrypt.hash(forteUser.password!, 10);
     forteUserData.name = salesRepName;
+    forteUserData.created = Date();
     // forteUser.password = await bcrypt.hash(forteUser.password!, 10);
     // forteUser.name = forteUser.salesRepName;
     const forteUserCreated = await this.forteUserRepository.create(forteUserData);
