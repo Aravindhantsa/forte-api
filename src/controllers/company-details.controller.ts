@@ -1,3 +1,5 @@
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
 import {
   Count,
   CountSchema,
@@ -7,24 +9,49 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  HttpErrors,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
+import {roleBasedAuthorization} from '../authorization/role.authorizer';
 import {CompanyDetails} from '../models';
 import {CompanyDetailsRepository} from '../repositories';
 
 export class CompanyDetailsController {
   constructor(
     @repository(CompanyDetailsRepository)
-    public companyDetailsRepository : CompanyDetailsRepository,
-  ) {}
+    public companyDetailsRepository: CompanyDetailsRepository,
+  ) { }
+  @authenticate('jwt')
+  @authorize({allowedRoles: ['admin', 'salesRep'], voters: [roleBasedAuthorization]})
+  @post('/company-details/createCompany')
+  async createCompany(@requestBody() companyDetails: Omit<CompanyDetails, 'id'>) {
+    if (!companyDetails.companyName || !companyDetails.address1 || !companyDetails.city || !companyDetails.state || !companyDetails.salesRepId) {
+      throw new HttpErrors.BadRequest('Missing fields');
+    }
+    const companyExisting = await this.companyDetailsRepository.findOne({where: {companyName: companyDetails.companyName}});
+    if (companyExisting) throw new HttpErrors.BadRequest('Company Name exists');
+    companyDetails.created = Date();
+    companyDetails.status = 'active';
+    const forteCompanyCreated = await this.companyDetailsRepository.create(companyDetails);
+    return forteCompanyCreated;
+  }
+
+  @authenticate('jwt')
+  @get('/company-details/companyList')
+  async getAllUsers() {
+    const company = await this.companyDetailsRepository.find();
+    return company;
+  }
+
+
 
   @post('/company-details')
   @response(200, {
