@@ -75,11 +75,13 @@ export class ForteUserController {
     const userProfile = {
       id: user.id,
       email: user.email,
+      name: user.name,
       role: user.userType,
     } as any;
 
     const token = await this.jwtService.generateToken(userProfile);
-    return {token};
+    userProfile.token = token;
+    return userProfile;
   }
 
 
