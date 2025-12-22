@@ -1,8 +1,8 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
-
 @model()
-export class BusinessRules extends Entity {
+export class BusinessRules extends BaseEntity {
   @property({
     type: 'number',
     id: true,
@@ -59,16 +59,25 @@ export class BusinessRules extends Entity {
   specificZipTo?: string;
 
   @property({
-    type: 'string',
+    type: 'number',
     required: true,
+    jsonSchema: {
+      minimum: 0,
+      maximum: 100,
+    },
+    mysql: {
+      dataType: 'decimal',
+      precision: 5,
+      scale: 2,
+    },
   })
-  discount: string;
+  discount: number;
 
   @property({
-    type: 'string',
+    type: 'number',
     required: true,
   })
-  minCharge: string;
+  amc: number;
 
   @property({
     type: 'array',
@@ -90,16 +99,6 @@ export class BusinessRules extends Entity {
     type: 'string',
   })
   createdBy?: string;
-
-  @property({
-    type: 'date',
-  })
-  created?: string;
-
-  @property({
-    type: 'date',
-  })
-  lastUpdated?: string;
 
   @belongsTo(() => CompanyDetails, {name: 'companyDetails'})
   companyId: number;

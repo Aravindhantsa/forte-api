@@ -1,9 +1,10 @@
-import {Entity, hasOne, model, property} from '@loopback/repository';
+import {hasOne, model, property} from '@loopback/repository';
 import {AdminUsers} from './admin-users.model';
+import {BaseEntity} from './base-entity.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
 
 @model()
-export class ForteUser extends Entity {
+export class ForteUser extends BaseEntity {
   @property({
     type: 'number',
     id: true,
@@ -55,16 +56,6 @@ export class ForteUser extends Entity {
     type: 'number',
   })
   invalidLoginAttempt?: number;
-
-  @property({
-    type: 'date',
-  })
-  created: string;
-
-  @property({
-    type: 'date',
-  })
-  lastUpdated?: string;
 
   @hasOne(() => AdminUsers)
   adminUsers: AdminUsers;

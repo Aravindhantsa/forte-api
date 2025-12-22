@@ -28,7 +28,6 @@ export class ForteApiApplication extends BootMixin(
 
     // Set up the custom sequence
     this.sequence(MySequence);
-
     this.api({
       openapi: '3.0.0',
       info: {

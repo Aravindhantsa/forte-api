@@ -7,13 +7,14 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  HttpErrors,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
@@ -23,8 +24,31 @@ import {BusinessRulesRepository} from '../repositories';
 export class BusinessRulesController {
   constructor(
     @repository(BusinessRulesRepository)
-    public businessRulesRepository : BusinessRulesRepository,
-  ) {}
+    public businessRulesRepository: BusinessRulesRepository,
+  ) { }
+
+
+  @post('/business-rules/createBusinessRules')
+  async createBusinessRules(@requestBody() businessRules: Omit<BusinessRules, 'id'>) {
+    if (!businessRules.direction || !businessRules.carrier || !businessRules.category || !businessRules.discount || !businessRules.amc || !businessRules.companyId) {
+      throw new HttpErrors.BadRequest('Missing fields');
+    }
+    const businessRulesCreated = await this.businessRulesRepository.create(businessRules);
+    return businessRulesCreated;
+  }
+
+  @post('/business-rules/createBusinessRulesArray')
+  async createBusinessRulesArray(@requestBody() businessRules: Omit<BusinessRules, 'id'>[],) {
+    if (!businessRules.length) {
+      throw new HttpErrors.BadRequest('Business rules array is empty');
+    }
+    for (const rule of businessRules) {
+      if (!rule.direction || !rule.carrier || !rule.category || rule.discount === undefined || rule.amc === undefined || !rule.companyId) {
+        throw new HttpErrors.BadRequest('Missing fields in one of the rules');
+      }
+    }
+    return await this.businessRulesRepository.createAll(businessRules);
+  }
 
   @post('/business-rules')
   @response(200, {

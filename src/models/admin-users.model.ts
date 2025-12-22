@@ -1,10 +1,11 @@
-import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
+import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
 import {ForteUser} from './forte-user.model';
 
 @model()
-export class AdminUsers extends Entity {
+export class AdminUsers extends BaseEntity {
   @property({
     type: 'number',
     id: true,
@@ -55,17 +56,6 @@ export class AdminUsers extends Entity {
     type: 'number',
   })
   invalidLoginAttempt?: number;
-
-  @property({
-    type: 'date',
-    required: true,
-  })
-  created: string;
-
-  @property({
-    type: 'date',
-  })
-  lastUpdated?: string;
 
   @belongsTo(() => ForteUser)
   forteUserId: number;

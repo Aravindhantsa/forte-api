@@ -1,10 +1,11 @@
-import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
 import {AdminUsers} from './admin-users.model';
-import {ExternalCustomersDetail} from './external-customers-detail.model';
+import {BaseEntity} from './base-entity.model';
 import {BusinessRules} from './business-rules.model';
+import {ExternalCustomersDetail} from './external-customers-detail.model';
 
 @model()
-export class CompanyDetails extends Entity {
+export class CompanyDetails extends BaseEntity {
   @property({
     type: 'number',
     id: true,
@@ -123,17 +124,6 @@ export class CompanyDetails extends Entity {
     type: 'string',
   })
   byOrder?: string;
-
-  @property({
-    type: 'date',
-    required: true,
-  })
-  created: string;
-
-  @property({
-    type: 'date',
-  })
-  lastUpdated?: string;
 
   @belongsTo(() => AdminUsers, {name: 'adminUsers'})
   salesRepId: number;

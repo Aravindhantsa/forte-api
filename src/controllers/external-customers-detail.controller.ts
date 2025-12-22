@@ -7,24 +7,60 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  HttpErrors,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {ExternalCustomersDetail} from '../models';
-import {ExternalCustomersDetailRepository} from '../repositories';
+import * as bcrypt from 'bcryptjs';
+import {ExternalCustomersDetail, ForteUser} from '../models';
+import {ExternalCustomersDetailRepository, ForteUserRepository} from '../repositories';
 
 export class ExternalCustomersDetailController {
   constructor(
     @repository(ExternalCustomersDetailRepository)
-    public externalCustomersDetailRepository : ExternalCustomersDetailRepository,
-  ) {}
+    public externalCustomersDetailRepository: ExternalCustomersDetailRepository,
+    @repository(ForteUserRepository)
+    public forteUserRepository: ForteUserRepository,
+  ) { }
+
+  @post('/external-customers-details/createExternalCustomer')
+  async createExternalCustomer(@requestBody() externalCustomersDetail: Omit<ExternalCustomersDetail, 'id'> & {password: string}) {
+    if (!externalCustomersDetail.email || !externalCustomersDetail.username || !externalCustomersDetail.password || !externalCustomersDetail.companyId || !externalCustomersDetail.salesRepId) {
+      throw new HttpErrors.BadRequest('Missing fields');
+    }
+    const emailExisting = await this.forteUserRepository.findOne({where: {email: externalCustomersDetail.email}});
+    if (emailExisting) throw new HttpErrors.BadRequest('Email exists');
+    const usernameExisting = await this.forteUserRepository.findOne({where: {username: externalCustomersDetail.username}});
+    if (usernameExisting) throw new HttpErrors.BadRequest('Username exists');
+    const externalEmailExisting = await this.externalCustomersDetailRepository.findOne({where: {email: externalCustomersDetail.email}});
+    if (externalEmailExisting) throw new HttpErrors.BadRequest('Email exists');
+    const externalUsernameExisting = await this.externalCustomersDetailRepository.findOne({where: {username: externalCustomersDetail.username}});
+    if (externalUsernameExisting) throw new HttpErrors.BadRequest('Username exists');
+    const allowedUserTypes = ['web', 'non-web'];
+    if (!allowedUserTypes.includes(externalCustomersDetail.userType as any)) {
+      throw new HttpErrors.BadRequest('Invalid userType. Allowed values are: web, non-web');
+    }
+    const forteUserObject: Partial<ForteUser> = {
+      name: externalCustomersDetail.customerName,
+      username: externalCustomersDetail.username,
+      email: externalCustomersDetail.email,
+      password: await bcrypt.hash(externalCustomersDetail.password!, 10),
+      status: 'active',
+      userType: externalCustomersDetail.userType,
+    };
+    const forteUserCreated = await this.forteUserRepository.create(forteUserObject);
+    externalCustomersDetail.status = 'active';
+    externalCustomersDetail.forteUserId = Number(forteUserCreated.id);
+    const externalCustomerCreated = await this.externalCustomersDetailRepository.create(externalCustomersDetail);
+    return externalCustomerCreated;
+  }
 
   @post('/external-customers-details')
   @response(200, {

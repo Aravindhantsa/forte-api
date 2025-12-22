@@ -1,10 +1,11 @@
-import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {belongsTo, model, property} from '@loopback/repository';
 import {AdminUsers} from './admin-users.model';
+import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
 import {ForteUser} from './forte-user.model';
 
 @model()
-export class ExternalCustomersDetail extends Entity {
+export class ExternalCustomersDetail extends BaseEntity {
   @property({
     type: 'number',
     id: true,
@@ -90,15 +91,6 @@ export class ExternalCustomersDetail extends Entity {
   })
   createdBy?: string;
 
-  @property({
-    type: 'date',
-  })
-  created?: string;
-
-  @property({
-    type: 'date',
-  })
-  lastUpdated?: string;
   @belongsTo(() => AdminUsers, {name: 'adminUsers'})
   salesRepId: number;
 
