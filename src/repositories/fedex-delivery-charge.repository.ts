@@ -9,7 +9,7 @@ export class FedexDeliveryChargeRepository extends DefaultCrudRepository<
   FedexDeliveryChargeRelations
 > {
   constructor(
-    @inject('datasources.fortedb') dataSource: FortedbDataSource,
+    @inject('datasources.fortesmcdb') dataSource: FortedbDataSource,
   ) {
     super(FedexDeliveryCharge, dataSource);
   }

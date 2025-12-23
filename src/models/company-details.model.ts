@@ -81,6 +81,7 @@ export class CompanyDetails extends BaseEntity {
   @property({
     type: 'array',
     itemType: 'object',
+    mysql: {dataType: 'json'},
   })
   costPlusFactor?: object[];
 
@@ -92,6 +93,7 @@ export class CompanyDetails extends BaseEntity {
   @property({
     type: 'array',
     itemType: 'string',
+    mysql: {dataType: 'json'},
   })
   specificPricingList?: string[];
 

@@ -9,7 +9,7 @@ export class FedexMatrixAdj5Repository extends DefaultCrudRepository<
   FedexMatrixAdj5Relations
 > {
   constructor(
-    @inject('datasources.fortedb') dataSource: FortedbDataSource,
+    @inject('datasources.fortesmcdb') dataSource: FortedbDataSource,
   ) {
     super(FedexMatrixAdj5, dataSource);
   }

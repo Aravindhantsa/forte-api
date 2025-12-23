@@ -9,7 +9,7 @@ export class PeakSurchargeRepository extends DefaultCrudRepository<
   PeakSurchargeRelations
 > {
   constructor(
-    @inject('datasources.fortedb') dataSource: FortedbDataSource,
+    @inject('datasources.fortesmcdb') dataSource: FortedbDataSource,
   ) {
     super(PeakSurcharge, dataSource);
   }

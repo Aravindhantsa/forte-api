@@ -43,6 +43,15 @@ export class FedexAdjust extends Entity {
     type: 'string',
     required: true,
   })
+  mcAdj50lb: string;
+
+  @property({
+    type: 'string',
+    required: true,
+    mysql: {
+      dataType: 'TEXT',
+    },
+  })
   rtAdj: string;
 
 

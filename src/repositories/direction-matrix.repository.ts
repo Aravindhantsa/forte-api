@@ -9,7 +9,7 @@ export class DirectionMatrixRepository extends DefaultCrudRepository<
   DirectionMatrixRelations
 > {
   constructor(
-    @inject('datasources.fortedb') dataSource: FortedbDataSource,
+    @inject('datasources.fortesmcdb') dataSource: FortedbDataSource,
   ) {
     super(DirectionMatrix, dataSource);
   }

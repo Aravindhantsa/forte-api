@@ -1,7 +1,7 @@
 import {model, property} from '@loopback/repository';
 import {BaseEntity} from './base-entity.model';
 
-@model({settings: {strict: false}})
+@model()
 export class RecentRates extends BaseEntity {
   @property({
     type: 'number',
@@ -51,6 +51,7 @@ export class RecentRates extends BaseEntity {
   @property({
     type: 'array',
     itemType: 'object',
+    mysql: {dataType: 'json'},
   })
   accessorials?: object[];
 
@@ -69,11 +70,6 @@ export class RecentRates extends BaseEntity {
   })
   updatedBy?: string;
 
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
 
   constructor(data?: Partial<RecentRates>) {
     super(data);

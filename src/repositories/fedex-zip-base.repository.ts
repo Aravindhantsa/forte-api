@@ -9,7 +9,7 @@ export class FedexZipBaseRepository extends DefaultCrudRepository<
   FedexZipBaseRelations
 > {
   constructor(
-    @inject('datasources.fortedb') dataSource: FortedbDataSource,
+    @inject('datasources.fortesmcdb') dataSource: FortedbDataSource,
   ) {
     super(FedexZipBase, dataSource);
   }

@@ -38,7 +38,6 @@ export class CompanyDetailsController {
     }
     const companyExisting = await this.companyDetailsRepository.findOne({where: {companyName: companyDetails.companyName}});
     if (companyExisting) throw new HttpErrors.BadRequest('Company Name exists');
-    companyDetails.created = Date();
     companyDetails.status = 'active';
     const forteCompanyCreated = await this.companyDetailsRepository.create(companyDetails);
     return forteCompanyCreated;

@@ -9,7 +9,7 @@ export class FedexClsFacRepository extends DefaultCrudRepository<
   FedexClsFacRelations
 > {
   constructor(
-    @inject('datasources.fortedb') dataSource: FortedbDataSource,
+    @inject('datasources.fortesmcdb') dataSource: FortedbDataSource,
   ) {
     super(FedexClsFac, dataSource);
   }

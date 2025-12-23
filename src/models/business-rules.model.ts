@@ -31,12 +31,12 @@ export class BusinessRules extends BaseEntity {
   @property({
     type: 'boolean',
   })
-  specificStateFlag?: string;
+  specificStateFlag?: boolean;
 
   @property({
     type: 'boolean',
   })
-  specificZipFlag?: string;
+  specificZipFlag?: boolean;
 
   @property({
     type: 'string',
@@ -82,6 +82,7 @@ export class BusinessRules extends BaseEntity {
   @property({
     type: 'array',
     itemType: 'object',
+    mysql: {dataType: 'json'},
   })
   accessorials?: object[];
 
