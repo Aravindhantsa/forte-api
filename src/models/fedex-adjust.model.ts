@@ -43,7 +43,7 @@ export class FedexAdjust extends Entity {
     type: 'string',
     required: true,
   })
-  mcAdj50lb: string;
+  mcAdj501lb: string;
 
   @property({
     type: 'string',
