@@ -19,3 +19,4 @@ export * from './company-details-business-rules.controller';
 export * from './business-rules-company-details.controller';
 export * from './recent-rates.controller';
 export * from './fedex-cls-fac.controller';
+export * from './fedex-cls-fac-ar.controller';
