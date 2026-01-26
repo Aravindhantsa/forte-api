@@ -10,6 +10,7 @@ import {
 } from '@loopback/rest';
 import {FedexClsFacAr} from '../models';
 import {
+  BusinessRulesRepository,
   DirectionMatrixRepository,
   FedexAdditionalRateRepository,
   FedexAdjustArRepository,
@@ -47,6 +48,7 @@ export class FedexClsFacArController {
   private matrixAdjRepoMap: Record<string, any>;
   constructor(
     @repository(FedexClsFacArRepository) public fedexClsFacArRepository: FedexClsFacArRepository,
+    @repository(BusinessRulesRepository) public businessRulesRepository: BusinessRulesRepository,
     @repository(DirectionMatrixRepository) public directionMatrixRepository: DirectionMatrixRepository,
     @repository(FedexZipBaseArRepository) public fedexZipBaseArRepository: FedexZipBaseArRepository,
     @repository(FedexMatrixRbAr0Repository) public fedexMatrixRbAr0Repository: FedexMatrixRbAr0Repository,
@@ -112,7 +114,7 @@ export class FedexClsFacArController {
       'application/json': {
         schema: {
           type: 'object',
-          required: ['origin', 'destination', 'class', 'weight', 'originState', 'destinationState', 'originCity', 'destinationCity'],
+          required: ['origin', 'destination', 'class', 'weight', 'originState', 'destinationState', 'originCity', 'destinationCity', 'companyId'],
           properties: {
             origin: {type: 'string'},
             destination: {type: 'string'},
@@ -131,6 +133,7 @@ export class FedexClsFacArController {
             destinationState: {type: 'string'},
             originCity: {type: 'string'},
             destinationCity: {type: 'string'},
+            companyId: {type: 'number'}
           },
         },
       },
@@ -139,6 +142,9 @@ export class FedexClsFacArController {
     const result = {...calcDetails} as any;
     const directionMatrix = await this.directionMatrixRepository.findOne({where: {originState: calcDetails.originState, destinationState: calcDetails.destinationState, }, });
     result.shipType = directionMatrix?.direction ?? 'N';
+    result.category = 'AR';
+    result.fpProfileRate = await this.discountDetail(result, 'FEDEX PRIORITY');
+    result.feProfileRate = await this.discountDetail(result, 'FEDEX ECONOMY');
     const [originZipBase, destinationZipBase] = await Promise.all([
       this.fedexZipBaseArRepository.findOne({where: {zipCode: calcDetails.origin}}),
       this.fedexZipBaseArRepository.findOne({where: {zipCode: calcDetails.destination}}),
@@ -792,7 +798,226 @@ export class FedexClsFacArController {
 
     return result;
   }
+  private async discountDetail(result: any, fxType: string) {
+    let returnResult: any[] = [];
 
+    const businessRules = await this.businessRulesRepository.find({
+      where: {companyId: result.companyId},
+    });
+
+    if (!businessRules || businessRules.length === 0) {
+      console.log('Business Rules Empty');
+      return returnResult;
+    }
+
+    // Extract from result object
+    const calculationDetail = result.calculationDetail;
+    const category = result.category;
+    const type = fxType;
+    const companyId = result.companyId;
+    const resultRI = result.shipType;
+
+    // ================================
+    // FILTER BASE RULES
+    // ================================
+    const rules = businessRules.filter(el => {
+      return (
+        el.carrier === type &&
+        el.category == category &&
+        el.companyId == companyId
+      );
+    });
+
+    if (rules.length === 0) {
+      return returnResult;
+    }
+
+    const specialRulesArray: any[] = [];
+    let intrastateRules: any[] = [];
+
+    // ================================
+    // INTRASTATE - CITY TO CITY
+    // ================================
+    intrastateRules = rules.filter(el => {
+      return (
+        el.direction === 'INTRASTATE' &&
+        el.specificZipFrom?.[0] == calculationDetail.origin &&
+        el.specificZipTo?.[0] == calculationDetail.destination
+      );
+    });
+
+    // ================================
+    // INTRASTATE - STATE TO STATE
+    // ================================
+    if (intrastateRules.length === 0) {
+      intrastateRules = rules.filter(el => {
+        return (
+          el.direction === 'INTRASTATE' &&
+          el.specificStateFrom?.[0] ==
+          calculationDetail.originState &&
+          el.specificStateTo?.[0] ==
+          calculationDetail.destinationState
+        );
+      });
+    }
+
+    // ================================
+    // SPECIAL RULES
+    // ================================
+    const specialRules = rules.filter(
+      el => el.direction === 'SPECIAL RULES',
+    );
+
+    if (specialRules.length > 0) {
+      const pushIfFound = (arr: any[]) => {
+        if (arr && arr.length > 0) {
+          specialRulesArray.push(arr[0]);
+        }
+      };
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificZipFrom?.[0] ==
+            calculationDetail.origin &&
+            el.specificZipTo?.[0] ==
+            calculationDetail.destination,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificStateFrom?.[0] ==
+            calculationDetail.originState &&
+            el.specificStateTo?.[0] ==
+            calculationDetail.destinationState,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificZipFrom?.[0] ==
+            calculationDetail.origin &&
+            el.specificZipTo?.[0] ==
+            calculationDetail.destinationState,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificZipFrom?.[0] ==
+            calculationDetail.originState &&
+            el.specificZipTo?.[0] ==
+            calculationDetail.destination,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificZipFrom?.[0] ==
+            calculationDetail.origin &&
+            el.specificZipTo?.[0] == null,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificZipFrom?.[0] == null &&
+            el.specificZipTo?.[0] ==
+            calculationDetail.destination,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificStateFrom?.[0] ==
+            calculationDetail.originState &&
+            el.specificStateTo?.[0] == null,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificStateFrom?.[0] == null &&
+            el.specificStateTo?.[0] ==
+            calculationDetail.destinationState,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificZipFrom?.[0] ==
+            calculationDetail.origin &&
+            el.specificZipTo?.[0] == 'ALL',
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificZipFrom?.[0] == 'ALL' &&
+            el.specificZipTo?.[0] ==
+            calculationDetail.destination,
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificStateFrom?.[0] ==
+            calculationDetail.originState &&
+            el.specificStateTo?.[0] == 'ALL',
+        ),
+      );
+
+      pushIfFound(
+        specialRules.filter(
+          el =>
+            el.specificStateFrom?.[0] == 'ALL' &&
+            el.specificStateTo?.[0] ==
+            calculationDetail.destinationState,
+        ),
+      );
+    }
+
+    // ================================
+    // FINAL PRIORITY LOGIC
+    // ================================
+    if (intrastateRules.length > 0) {
+      returnResult.push(intrastateRules[0]);
+      return returnResult;
+    } else if (specialRulesArray.length > 0) {
+      returnResult.push(specialRulesArray[0]);
+      return returnResult;
+    } else {
+      const regional = rules.filter(
+        el => el.direction === 'REGIONAL',
+      );
+      const interRegional = rules.filter(
+        el => el.direction === 'INTER REGIONAL',
+      );
+
+      if (resultRI === 'R') {
+        if (regional.length > 0) {
+          returnResult.push(regional[0]);
+        }
+      } else {
+        if (interRegional.length > 0) {
+          returnResult.push(interRegional[0]);
+        }
+      }
+
+      return returnResult;
+    }
+  }
 
 
 
