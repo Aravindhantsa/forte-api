@@ -60,3 +60,4 @@ export * from './fedex-matrix-rb-ar8.repository';
 export * from './fedex-matrix-rb-ar9.repository';
 export * from './fedex-rate-ar.repository';
 export * from './fedex-zip-base-ar.repository';
+export * from './quote-details.repository';

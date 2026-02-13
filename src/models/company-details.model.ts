@@ -3,6 +3,7 @@ import {AdminUsers} from './admin-users.model';
 import {BaseEntity} from './base-entity.model';
 import {BusinessRules} from './business-rules.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
+import {QuoteDetails} from './quote-details.model';
 
 @model()
 export class CompanyDetails extends BaseEntity {
@@ -135,6 +136,9 @@ export class CompanyDetails extends BaseEntity {
 
   @hasMany(() => BusinessRules, {keyTo: 'companyId'})
   businessRules: BusinessRules[];
+
+  @hasMany(() => QuoteDetails, {keyTo: 'companyId'})
+  quoteDetails: QuoteDetails[];
 
   constructor(data?: Partial<CompanyDetails>) {
     super(data);

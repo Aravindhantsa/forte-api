@@ -3,6 +3,7 @@ import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
 import {ForteUser} from './forte-user.model';
+import {QuoteDetails} from './quote-details.model';
 
 @model()
 export class AdminUsers extends BaseEntity {
@@ -65,6 +66,9 @@ export class AdminUsers extends BaseEntity {
 
   @hasMany(() => ExternalCustomersDetail, {keyTo: 'salesRepId'})
   externalCustomersDetails: ExternalCustomersDetail[];
+
+  @hasMany(() => QuoteDetails, {keyTo: 'salesRepId'})
+  quoteDetails: QuoteDetails[];
 
   constructor(data?: Partial<AdminUsers>) {
     super(data);

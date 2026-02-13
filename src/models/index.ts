@@ -60,3 +60,4 @@ export * from './fedex-zip-base.model';
 export * from './forte-user.model';
 export * from './peak-surcharge.model';
 export * from './recent-rates.model';
+export * from './quote-details.model';

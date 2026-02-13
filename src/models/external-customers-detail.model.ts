@@ -1,8 +1,9 @@
-import {belongsTo, model, property} from '@loopback/repository';
+import {belongsTo, model, property, hasMany} from '@loopback/repository';
 import {AdminUsers} from './admin-users.model';
 import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
 import {ForteUser} from './forte-user.model';
+import {QuoteDetails} from './quote-details.model';
 
 @model()
 export class ExternalCustomersDetail extends BaseEntity {
@@ -99,6 +100,9 @@ export class ExternalCustomersDetail extends BaseEntity {
 
   @belongsTo(() => ForteUser)
   forteUserId: number;
+
+  @hasMany(() => QuoteDetails, {keyTo: 'customerId'})
+  quoteDetails: QuoteDetails[];
 
   constructor(data?: Partial<ExternalCustomersDetail>) {
     super(data);
