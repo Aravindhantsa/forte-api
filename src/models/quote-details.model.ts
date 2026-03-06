@@ -1,7 +1,7 @@
-import {model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, model, property} from '@loopback/repository';
+import {AdminUsers} from './admin-users.model';
 import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
-import {AdminUsers} from './admin-users.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
 
 @model()
@@ -32,10 +32,12 @@ export class QuoteDetails extends BaseEntity {
   destinationZip: string;
 
   @property({
-    type: 'string',
+    type: 'array',
+    itemType: 'object',
+    mysql: {dataType: 'json'},
     required: true,
   })
-  classWeight: string;
+  classWeight: object[];
 
   @property({
     type: 'string',
@@ -51,9 +53,10 @@ export class QuoteDetails extends BaseEntity {
 
   @property({
     type: 'array',
+    itemType: 'string',
     mysql: {dataType: 'json'},
   })
-  accessorials?: object[];
+  accessorials?: string[];
 
   @property({
     type: 'object',
@@ -70,7 +73,7 @@ export class QuoteDetails extends BaseEntity {
     type: 'number',
     required: true,
   })
-  arTotalCharge: number;
+  arTotalCharge?: string;
 
   @property({
     type: 'string',

@@ -10,7 +10,7 @@ export async function migrate() {
   //  migrate ONLY fortesmcdb
   await app.migrateSchema({
     existingSchema: 'alter',
-    datasources: ['fortesmcdb'],
+    datasources: ['fortedb'],
   });
 
   console.log('\n fortesmcdb migration completed successfully.\n');
