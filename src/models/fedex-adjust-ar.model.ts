@@ -2,8 +2,10 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    datasource: 'fortesmcdb',
-  },
+    mysql: {
+      table: 'fedexadjustar'
+    }
+  }
 })
 export class FedexAdjustAr extends Entity {
   @property({

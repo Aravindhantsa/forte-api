@@ -1,11 +1,17 @@
-import {belongsTo, model, property, hasMany} from '@loopback/repository';
+import {belongsTo, hasMany, model, property} from '@loopback/repository';
 import {AdminUsers} from './admin-users.model';
 import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
 import {ForteUser} from './forte-user.model';
 import {QuoteDetails} from './quote-details.model';
 
-@model()
+@model({
+  settings: {
+    mysql: {
+      table: 'externalcustomersdetail'
+    }
+  }
+})
 export class ExternalCustomersDetail extends BaseEntity {
   @property({
     type: 'number',

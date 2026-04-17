@@ -1,7 +1,13 @@
 import {model, property} from '@loopback/repository';
 import {BaseEntity} from './base-entity.model';
 
-@model()
+@model({
+  settings: {
+    mysql: {
+      table: 'recentrates'
+    }
+  }
+})
 export class RecentRates extends BaseEntity {
   @property({
     type: 'number',

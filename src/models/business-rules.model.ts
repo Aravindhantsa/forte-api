@@ -1,7 +1,13 @@
 import {belongsTo, model, property} from '@loopback/repository';
 import {BaseEntity} from './base-entity.model';
 import {CompanyDetails} from './company-details.model';
-@model()
+@model({
+  settings: {
+    mysql: {
+      table: 'businessrules'
+    }
+  }
+})
 export class BusinessRules extends BaseEntity {
   @property({
     type: 'number',

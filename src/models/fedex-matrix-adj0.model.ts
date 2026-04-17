@@ -1,6 +1,12 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({
+  settings: {
+    mysql: {
+      table: 'fedexmatrixadj0'
+    }
+  }
+})
 export class FedexMatrixAdj0 extends Entity {
   @property({
     type: 'number',

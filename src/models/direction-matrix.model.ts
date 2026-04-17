@@ -1,6 +1,12 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({
+  settings: {
+    mysql: {
+      table: 'directionmatrix'
+    }
+  }
+})
 export class DirectionMatrix extends Entity {
   @property({
     type: 'number',

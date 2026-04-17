@@ -5,7 +5,13 @@ import {BusinessRules} from './business-rules.model';
 import {ExternalCustomersDetail} from './external-customers-detail.model';
 import {QuoteDetails} from './quote-details.model';
 
-@model()
+@model({
+  settings: {
+    mysql: {
+      table: 'companydetails'
+    }
+  }
+})
 export class CompanyDetails extends BaseEntity {
   @property({
     type: 'number',

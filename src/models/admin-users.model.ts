@@ -5,7 +5,13 @@ import {ExternalCustomersDetail} from './external-customers-detail.model';
 import {ForteUser} from './forte-user.model';
 import {QuoteDetails} from './quote-details.model';
 
-@model()
+@model({
+  settings: {
+    mysql: {
+      table: 'adminusers'
+    }
+  }
+})
 export class AdminUsers extends BaseEntity {
   @property({
     type: 'number',
