@@ -1,7 +1,7 @@
 import {AuthenticationComponent, registerAuthenticationStrategy} from '@loopback/authentication';
 import {AuthorizationComponent} from '@loopback/authorization';
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import {ApplicationConfig, createBindingFromClass} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication, SecuritySchemeObject} from '@loopback/rest';
 import {
@@ -11,9 +11,9 @@ import {
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {JWTAuthenticationStrategy} from './auth-strategies/jwt.strategy';
+import {TimestampObserver} from './observers/timestamp.observer';
 import {MySequence} from './sequence';
 import {JWTService} from './services/jwt-service.service';
-
 export {ApplicationConfig};
 
 export class ForteApiApplication extends BootMixin(
@@ -25,6 +25,7 @@ export class ForteApiApplication extends BootMixin(
     registerAuthenticationStrategy(this, JWTAuthenticationStrategy);
     this.component(AuthorizationComponent);
     this.bind('services.JWTService').toClass(JWTService);
+    this.add(createBindingFromClass(TimestampObserver));
 
     // Set up the custom sequence
     this.sequence(MySequence);

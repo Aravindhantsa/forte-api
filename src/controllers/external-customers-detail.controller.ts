@@ -47,18 +47,19 @@ export class ExternalCustomersDetailController {
     if (!allowedUserTypes.includes(externalCustomersDetail.userType as any)) {
       throw new HttpErrors.BadRequest('Invalid userType. Allowed values are: web, non-web');
     }
+    const {password, ...externalCustomerData} = externalCustomersDetail;
     const forteUserObject: Partial<ForteUser> = {
-      name: externalCustomersDetail.customerName,
-      username: externalCustomersDetail.username,
-      email: externalCustomersDetail.email,
-      password: await bcrypt.hash(externalCustomersDetail.password!, 10),
+      name: externalCustomerData.customerName,
+      username: externalCustomerData.username,
+      email: externalCustomerData.email,
+      password: await bcrypt.hash(password!, 10),
       status: 'active',
-      userType: externalCustomersDetail.userType,
+      userType: externalCustomerData.userType,
     };
     const forteUserCreated = await this.forteUserRepository.create(forteUserObject);
-    externalCustomersDetail.status = 'active';
-    externalCustomersDetail.forteUserId = Number(forteUserCreated.id);
-    const externalCustomerCreated = await this.externalCustomersDetailRepository.create(externalCustomersDetail);
+    externalCustomerData.status = 'active';
+    externalCustomerData.forteUserId = Number(forteUserCreated.id);
+    const externalCustomerCreated = await this.externalCustomersDetailRepository.create(externalCustomerData);
     return externalCustomerCreated;
   }
 

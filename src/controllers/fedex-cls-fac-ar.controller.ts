@@ -841,8 +841,8 @@ export class FedexClsFacArController {
     intrastateRules = rules.filter(el => {
       return (
         el.direction === 'INTRASTATE' &&
-        el.specificZipFrom?.[0] == calculationDetail.origin &&
-        el.specificZipTo?.[0] == calculationDetail.destination
+        el.specificZipFrom == calculationDetail.origin &&
+        el.specificZipTo == calculationDetail.destination
       );
     });
 
@@ -853,9 +853,9 @@ export class FedexClsFacArController {
       intrastateRules = rules.filter(el => {
         return (
           el.direction === 'INTRASTATE' &&
-          el.specificStateFrom?.[0] ==
+          el.specificStateFrom ==
           calculationDetail.originState &&
-          el.specificStateTo?.[0] ==
+          el.specificStateTo ==
           calculationDetail.destinationState
         );
       });
@@ -878,9 +878,9 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificZipFrom?.[0] ==
+            el.specificZipFrom ==
             calculationDetail.origin &&
-            el.specificZipTo?.[0] ==
+            el.specificZipTo ==
             calculationDetail.destination,
         ),
       );
@@ -888,9 +888,9 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificStateFrom?.[0] ==
+            el.specificStateFrom ==
             calculationDetail.originState &&
-            el.specificStateTo?.[0] ==
+            el.specificStateTo ==
             calculationDetail.destinationState,
         ),
       );
@@ -898,9 +898,9 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificZipFrom?.[0] ==
+            el.specificZipFrom ==
             calculationDetail.origin &&
-            el.specificZipTo?.[0] ==
+            el.specificZipTo ==
             calculationDetail.destinationState,
         ),
       );
@@ -908,9 +908,9 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificZipFrom?.[0] ==
+            el.specificZipFrom ==
             calculationDetail.originState &&
-            el.specificZipTo?.[0] ==
+            el.specificZipTo ==
             calculationDetail.destination,
         ),
       );
@@ -918,17 +918,17 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificZipFrom?.[0] ==
+            el.specificZipFrom ==
             calculationDetail.origin &&
-            el.specificZipTo?.[0] == null,
+            el.specificZipTo == null,
         ),
       );
 
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificZipFrom?.[0] == null &&
-            el.specificZipTo?.[0] ==
+            el.specificZipFrom == null &&
+            el.specificZipTo ==
             calculationDetail.destination,
         ),
       );
@@ -936,17 +936,17 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificStateFrom?.[0] ==
+            el.specificStateFrom ==
             calculationDetail.originState &&
-            el.specificStateTo?.[0] == null,
+            el.specificStateTo == null,
         ),
       );
 
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificStateFrom?.[0] == null &&
-            el.specificStateTo?.[0] ==
+            el.specificStateFrom == null &&
+            el.specificStateTo ==
             calculationDetail.destinationState,
         ),
       );
@@ -954,17 +954,17 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificZipFrom?.[0] ==
+            el.specificZipFrom ==
             calculationDetail.origin &&
-            el.specificZipTo?.[0] == 'ALL',
+            el.specificZipTo == 'ALL',
         ),
       );
 
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificZipFrom?.[0] == 'ALL' &&
-            el.specificZipTo?.[0] ==
+            el.specificZipFrom == 'ALL' &&
+            el.specificZipTo ==
             calculationDetail.destination,
         ),
       );
@@ -972,17 +972,17 @@ export class FedexClsFacArController {
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificStateFrom?.[0] ==
+            el.specificStateFrom ==
             calculationDetail.originState &&
-            el.specificStateTo?.[0] == 'ALL',
+            el.specificStateTo == 'ALL',
         ),
       );
 
       pushIfFound(
         specialRules.filter(
           el =>
-            el.specificStateFrom?.[0] == 'ALL' &&
-            el.specificStateTo?.[0] ==
+            el.specificStateFrom == 'ALL' &&
+            el.specificStateTo ==
             calculationDetail.destinationState,
         ),
       );
