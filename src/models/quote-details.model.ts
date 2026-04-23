@@ -76,8 +76,7 @@ export class QuoteDetails extends BaseEntity {
   apTotalCharge?: string;
 
   @property({
-    type: 'number',
-    required: true,
+    type: 'string',
   })
   arTotalCharge?: string;
 
