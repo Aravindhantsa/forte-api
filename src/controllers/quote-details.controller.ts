@@ -7,13 +7,13 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
@@ -23,10 +23,10 @@ import {QuoteDetailsRepository} from '../repositories';
 export class QuoteDetailsController {
   constructor(
     @repository(QuoteDetailsRepository)
-    public quoteDetailsRepository : QuoteDetailsRepository,
-  ) {}
+    public quoteDetailsRepository: QuoteDetailsRepository,
+  ) { }
 
-  @post('/quote-details')
+  @post('/quote-details/getRate')
   @response(200, {
     description: 'QuoteDetails model instance',
     content: {'application/json': {schema: getModelSchemaRef(QuoteDetails)}},
